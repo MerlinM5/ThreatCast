@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+  <h1><i class="fas fa-headset"></i> SOC Work Area</h1>
+  <p style="color: var(--text-secondary); margin-bottom: 10px;">
+    Convert live threats into SOC cases, assign analysts, and write investigation notes.
+  </p>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <button class="btn btn-accent" onclick="ingestFromPackets(false)">
+      <i class="fas fa-bolt"></i> Ingest Latest Threats
+    </button>
+    <button class="btn btn-red" onclick="ingestFromPackets(true)">
+      <i class="fas fa-flag-checkered"></i> Ingest Successful Only
+    </button>
+    <button class="btn btn-grey" onclick="exportJSON()">
+      <i class="fas fa-download"></i> Export JSON
+    </button>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 15px;">
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+    <label class="input-label" style="margin:0;">Status</label>
+    <select id="filterStatus" class="text-input" style="width:180px; margin:0;">
+      <option value="all">All</option>
+      <option value="new">New</option>
+      <option value="triaged">Triaged</option>
+      <option value="in_progress">In Progress</option>
+      <option value="resolved">Resolved</option>
+      <option value="false_positive">False Positive</option>
+    </select>
+
+    <label class="input-label" style="margin:0;">Severity</label>
+    <select id="filterSeverity" class="text-input" style="width:180px; margin:0;">
+      <option value="all">All</option>
+      <option value="critical">Critical</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+
+    <input id="searchBox" class="text-input" style="flex:1; margin:0;" placeholder="Search title, IP, assignee..." />
+    <button class="btn btn-grey" onclick="loadAlerts()"><i class="fas fa-sync"></i> Refresh</button>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 1.4fr 1fr; gap: 15px; margin-top: 15px;">
+
+  <!-- LEFT: Alerts Table -->
+  <div class="card no-padding">
+    <h2 style="padding:15px; margin:0;"><i class="fas fa-list"></i> Alerts</h2>
+    <div class="table-container">
+      <table id="socTable" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="padding:12px 15px; border-bottom:1px solid var(--border);">Time</th>
+            <th style="padding:12px 15px; border-bottom:1px solid var(--border);">Severity</th>
+            <th style="padding:12px 15px; border-bottom:1px solid var(--border);">Status</th>
+            <th style="padding:12px 15px; border-bottom:1px solid var(--border);">Title</th>
+            <th style="padding:12px 15px; border-bottom:1px solid var(--border);">IP</th>
+          </tr>
+        </thead>
+        <tbody id="socBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT: Investigation Area -->
+  <div class="card">
+    <h2><i class="fas fa-user-shield"></i> Investigation Area</h2>
+
+    <div id="detailEmpty" style="color: var(--text-secondary);">
+      Select an alert to start investigation.
+    </div>
+
+    <div id="detailBox" style="display:none;">
+
+      <!-- Case Header -->
+      <div style="padding:12px; border:1px solid var(--border); border-radius:10px; background:#10141a;">
+        <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+          <div>
+            <div style="color: var(--text-secondary); font-size:0.85rem;">CASE ID</div>
+            <div style="font-family: ui-monospace, monospace;" id="dId"></div>
+          </div>
+          <div>
+            <div style="color: var(--text-secondary); font-size:0.85rem;">SOURCE IP</div>
+            <div style="font-family: ui-monospace, monospace;" id="dIp"></div>
+          </div>
+          <div>
+            <div style="color: var(--text-secondary); font-size:0.85rem;">TARGET ASSET</div>
+            <div id="dAsset"></div>
+          </div>
+          <div>
+            <div style="color: var(--text-secondary); font-size:0.85rem;">HTS</div>
+            <div id="dHTS"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div style="color: var(--text-secondary); font-size:0.85rem;">TITLE</div>
+          <div style="font-weight:700;" id="dTitle"></div>
+        </div>
+
+        <div style="margin-top:8px;">
+          <div style="color: var(--text-secondary); font-size:0.85rem;">ALERT SUMMARY</div>
+          <div id="dSummary" style="color: var(--text-primary);"></div>
+        </div>
+      </div>
+
+      <!-- Assignment + Workflow -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
+        <div>
+          <label class="input-label">Assignee</label>
+          <input id="assigneeInput" class="text-input" placeholder=" analyst1" />
+        </div>
+
+        <div>
+          <label class="input-label">Status</label>
+          <select id="statusSelect" class="text-input" style="width:100%;">
+            <option value="new">New</option>
+            <option value="triaged">Triaged</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="false_positive">False Positive</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="input-label">Priority</label>
+          <select id="prioritySelect" class="text-input" style="width:100%;">
+            <option value="p1">P1 (Immediate)</option>
+            <option value="p2">P2 (High)</option>
+            <option value="p3">P3 (Normal)</option>
+            <option value="p4">P4 (Low)</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:flex-end;">
+          <button class="btn btn-accent" style="width:100%;" onclick="saveAlert()">
+            <i class="fas fa-save"></i> Save Case
+          </button>
+          <button class="btn btn-red" style="width:100%;" onclick="deleteAlert()">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Case Summary -->
+      <div style="margin-top:12px;">
+        <label class="input-label">Case Summary (your own words)</label>
+        <textarea id="caseSummary" class="text-input" style="width:100%; height:90px; resize:vertical;"
+          placeholder="Write what happened, why it's risky, evidence, and what action you took..."></textarea>
+      </div>
+
+      <!-- Notes Timeline -->
+      <div style="margin-top:12px;">
+        <h3 style="margin:0 0 10px 0;"><i class="fas fa-stream"></i> Investigation Notes (Timeline)</h3>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input id="noteAuthor" class="text-input" placeholder="author (optional)" style="flex:0.45;" />
+          <input id="noteText" class="text-input" placeholder="Add investigation note..." style="flex:1;" />
+          <button class="btn btn-grey" onclick="addNote()">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+
+        <div id="notesList" style="margin-top: 10px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/soc.js') }}"></script>
+
+{% endblock %}

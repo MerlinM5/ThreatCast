@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1 class="centered-heading"><i class="fas fa-brain" style="color: var(--accent);"></i> Sentinel Semantic Detector</h1>
+    <p class="subtitle">
+        Analyze any suspicious URL string to predict the attacker's intent using a novel semantic-first model, providing deep explainability rather than simple pattern matching.
+    </p>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-link"></i> URL Input for Intent Analysis</h2>
+    
+    <div style="display: flex; gap: 15px; align-items: flex-end;">
+        <div style="flex-grow: 1;">
+            <label for="url_input" class="input-label">URL String to Analyze (e.g., /file.php?path=../../etc/passwd)</label>
+            <input type="text" id="url_input" placeholder="Enter full URL or path + query string" class="text-input" value="" style="width: 100%;" oninput="clearResults()">
+        </div>
+        <div>
+            <button onclick="analyzeUrlIntent()" class="btn btn-accent" id="analyze-btn" style="height: 40px; margin-right: 0;">
+                <i class="fas fa-search-location"></i> Analyze Intent
+            </button>
+        </div>
+    </div>
+    
+    <div id="loading-indicator" class="loading-indicator" style="display: none; margin-top: 15px;">
+        <i class="fas fa-spinner fa-spin"></i> Running Semantic Inference (SAII)...
+    </div>
+
+    <div id="error-message" class="error-message" style="display: none;"></div>
+</div>
+
+<div class="card" id="analysis-results-card" style="display: none; margin-top: 20px;">
+    <h2><i class="fas fa-lightbulb"></i> Semantic Analysis Results</h2>
+    
+    <div class="grid-3" style="grid-template-columns: 1fr 1fr 2fr; gap: 20px; margin-bottom: 20px;">
+        
+        <div class="card metric" style="padding: 10px; cursor: default; border-left: 5px solid var(--low-green);" id="intent-card">
+            <h3 class="metric-label"><i class="fas fa-bullseye"></i> PREDICTED ATTACK INTENT</h3>
+            <p id="result-intent" class="metric-value" style="color: var(--low-green);"></p>
+        </div>
+        
+        <div class="card metric" style="padding: 10px; cursor: default;">
+            <h3 class="metric-label"><i class="fas fa-star-half-alt"></i> CONFIDENCE SCORE (SAII)</h3>
+            <p id="result-confidence" class="metric-value" style="color: var(--accent);"></p>
+        </div>
+
+        <div class="card" style="padding: 10px; box-shadow: none;">
+            <h3 class="metric-label" style="border-bottom: 1px dotted var(--border); padding-bottom: 5px;"><i class="fas fa-microscope"></i> EXPLAINABILITY</h3>
+            <p id="result-explanation" style="font-size: 1.0rem; color: var(--text-primary); margin: 0;"></p>
+        </div>
+    </div>
+    
+    <h3 class="metric-label" style="color: var(--accent); border-bottom: 1px dotted var(--border); padding-bottom: 5px;">Underlying Semantic Signals (Feature Engineering)</h3>
+    <div class="grid-3" style="gap: 20px; margin-bottom: 10px;">
+        <div class="card metric signal-card">
+            <h3 class="metric-label">Traversal Segments (../ or %2e)</h3>
+            <p id="signal-traversal" class="metric-value-small" style="color: var(--high-orange);"></p>
+        </div>
+        <div class="card metric signal-card">
+            <h3 class="metric-label">Script Operators (<, >, (, ))</h3>
+            <p id="signal-script" class="metric-value-small" style="color: var(--medium-yellow);"></p>
+        </div>
+        <div class="card metric signal-card">
+            <h3 class="metric-label">Shell Operators (;, &&, $)</h3>
+            <p id="signal-shell" class="metric-value-small" style="color: var(--critical-red);"></p>
+        </div>
+    </div>
+</div>
+
+<div id="chatbot-icon" onclick="toggleChatbot()">
+    <i class="fas fa-comment-dots"></i>
+</div>
+
+<div id="chatbot-window">
+    <div class="chat-header">
+        Ethic Bot <i class="fas fa-robot" style="color: var(--bg-deep-dark); margin-left: 5px;"></i>
+    </div>
+    <div class="chat-body" id="chat-messages">
+        <div class="chat-message-bot">
+            <strong>Welcome!</strong>
+            <p style="margin: 0; margin-top: 5px;">I'm your Ethic Bot. I can infer attacker intent, check mobile spam links, and help you understand NTRO-level threats.</p>
+            <p style="margin: 0; margin-top: 5px;">Oops! I am currently under development!</p>
+            <p style="margin: 5px 0 0 0;">Hello, what can I do for you?</p>
+        </div>
+    </div>
+    <div class="chat-input-container">
+        <input type="text" class="chat-input" id="chat-input-field" placeholder="Type your query..." onkeydown="handleChatInput(event)">
+        <button class="btn btn-accent" style="padding: 10px;" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+    function clearResults() {
+        document.getElementById('analysis-results-card').style.display = 'none';
+        document.getElementById('error-message').style.display = 'none';
+    }
+    
+    // --- CHATBOT UI TOGGLE & SEND SCRIPT ---
+    function toggleChatbot() {
+        const chatWindow = document.getElementById('chatbot-window');
+        chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+        if (chatWindow.style.display === 'flex') {
+            document.getElementById('chat-input-field').focus();
+        }
+    }
+    
+    function displayMessage(message, isUser) {
+        const chatBody = document.getElementById('chat-messages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = isUser ? 'chat-message-user' : 'chat-message-bot';
+        
+        if (isUser) {
+             msgDiv.innerText = message;
+        } else {
+             msgDiv.innerHTML = `<strong>Ethic Bot</strong><p style="margin:0; margin-top:5px;">${message}</p>`;
+        }
+        
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function sendMessage() {
+        const inputField = document.getElementById('chat-input-field');
+        const userMessage = inputField.value.trim();
+
+        if (userMessage === '') return;
+
+        // 1. Display User Message
+        displayMessage(userMessage, true);
+
+        // 2. Clear Input Field
+        inputField.value = ''; 
+
+        // 3. Display Static Bot Reply
+        setTimeout(() => {
+            let botReply;
+            if (userMessage.toLowerCase().includes('hello') || userMessage.toLowerCase().includes('hi') || userMessage.toLowerCase().includes('hai')) {
+                botReply = "Hai! I see you sent a message. This is a static co-pilot model, so I can't process that, but I received your input successfully!";
+            } else {
+                botReply = "Acknowledged. I'm operating in static mode and can't process complex queries yet. So please try to analyze a URL using above dash!";
+            }
+            displayMessage(botReply, false);
+        }, 500);
+    }
+    
+    function handleChatInput(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+    
+    async function analyzeUrlIntent() {
+        const urlInput = document.getElementById('url_input').value.trim();
+        const loading = document.getElementById('loading-indicator');
+        const errorMsg = document.getElementById('error-message');
+        const resultsCard = document.getElementById('analysis-results-card');
+        
+        resultsCard.style.display = 'none';
+        errorMsg.style.display = 'none';
+
+        if (!urlInput) {
+            errorMsg.innerText = 'Error: Please enter a URL string to analyze.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        loading.style.display = 'block';
+
+        try {
+            const res = await fetch('/api/analyze_intent', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ url: urlInput })
+            });
+
+            const data = await res.json();
+            loading.style.display = 'none';
+
+            if (data.error) {
+                errorMsg.innerText = `[API Error]: ${data.error}`;
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const intentCard = document.getElementById('intent-card');
+            
+            document.getElementById('result-intent').innerText = `${data.intent} (${data.severity})`;
+            document.getElementById('result-intent').style.color = data.color;
+            intentCard.style.borderLeftColor = data.color;
+            
+            document.getElementById('result-confidence').innerText = `${data.confidence}%`;
+            document.getElementById('result-confidence').style.color = data.color;
+            document.getElementById('result-explanation').innerText = data.explanation;
+            
+            document.getElementById('signal-traversal').innerText = data.semantic_signals.traversal_segments;
+            document.getElementById('signal-script').innerText = data.semantic_signals.script_operators;
+            document.getElementById('signal-shell').innerText = data.semantic_signals.shell_operators;
+
+            resultsCard.style.display = 'block';
+
+        } catch (e) {
+            loading.style.display = 'none';
+            errorMsg.innerText = 'An unknown error occurred during API communication.';
+            errorMsg.style.display = 'block';
+            console.error("SAII API Error:", e);
+        }
+    }
+</script>
+{% endblock %}

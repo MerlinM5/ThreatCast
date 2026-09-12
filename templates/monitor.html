@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel-header">
+    <h1><i class="fas fa-satellite-dish"></i> Hybrid Detection System (Monitor)</h1>
+    <div class="controls">
+        <button onclick="controlTraffic('start')" class="btn btn-green"><i class="fas fa-play"></i> Start Capture</button>
+        <button onclick="controlTraffic('stop')" class="btn btn-red"><i class="fas fa-stop"></i> Stop</button>
+        <button onclick="controlTraffic('clear')" class="btn btn-grey" style="margin-right: 10px;"><i class="fas fa-trash"></i> Clear</button>
+        <button onclick="exportPackets('json')" class="btn btn-accent"><i class="fas fa-download"></i> Export JSON</button>
+        <button onclick="exportPackets('csv')" class="btn btn-accent" style="margin-left: 5px;"><i class="fas fa-table"></i> Export CSV</button>
+    </div>
+</div>
+
+<div class="card no-padding" style="margin-bottom: 20px; padding: 15px;">
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <label for="attackFilter" class="input-label" style="margin-bottom: 0; flex-shrink: 0; color: var(--accent);">
+            <i class="fas fa-filter"></i> Filter by Type:
+        </label>
+        <select id="attackFilter" class="text-input" style="width: 250px; margin-bottom: 0;" onchange="updatePackets()">
+            <option value="ALL">All Traffic</option>
+            <option value="THREATS">All Threats (Medium+)</option>
+            <option value="SUCCESSFUL">Confirmed Successful Exploits</option>
+            <option value="Normal">Normal Traffic</option>
+            </select>
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">(Filter will update on the next data fetch cycle.)</p>
+    </div>
+</div>
+
+
+<div class="card no-padding">
+    <h2><i class="fas fa-network-wired"></i> Live Traffic Analysis (Latest 50)</h2>
+    <div class="table-container">
+        <table id="packetTable">
+            <thead>
+                <tr>
+                    <th width="5%">No.</th>
+                    <th width="10%">Time</th>
+                    <th width="15%">Source</th>
+                    <th width="15%">Destination</th>
+                    <th width="8%">Protocol</th>
+                    <th width="32%">Detection Log / Payload</th>
+                    <th width="10%">Severity (HTS)</th>
+                    <th width="5%">Action</th> 
+                </tr>
+            </thead>
+            <tbody id="packetBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <h2><i class="fas fa-ban" style="color: var(--critical-red);"></i> WAF Block List (Active Prevention Audit)</h2>
+    <div class="table-container">
+        <table id="blockedTable">
+            <thead>
+                <tr>
+                    <th width="10%">Time</th>
+                    <th width="15%">Blocked IP</th>
+                    <th width="10%">Action</th>
+                    <th width="10%">Severity</th>
+                    <th width="55%">Block Reason (X-HTS Justification)</th>
+                </tr>
+            </thead>
+            <tbody id="blockedBody">
+                <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No IPs currently blocked.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

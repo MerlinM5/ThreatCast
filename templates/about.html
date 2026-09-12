@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1><i class="fas fa-info-circle"></i> About ThreatCast Defense Platform</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 1.1rem;">
+        ThreatCast is a unified, next-generation network traffic analysis and simulated threat detection platform, designed for speed and clarity in forensic investigation and real-time monitoring. Developed by Cybersecurity students of Royal College of Engineering and Technology
+    </p>
+</div>
+
+<div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    
+    <div class="card feature-card">
+        <i class="fas fa-bullseye icon-large" style="color: var(--accent); margin-bottom: 15px;"></i>
+        <h2>Core Mission</h2>
+        <p>To provide clear, actionable intelligence from high-volume network traffic. We prioritize immediate identification of zero-day exploits and pattern-based attacks.</p>
+    </div>
+
+    <div class="card feature-card">
+        <i class="fas fa-layer-group icon-large" style="color: var(--low-green); margin-bottom: 15px;"></i>
+        <h2>Unified Analysis</h2>
+        <p>Integrate data streams from multiple sources, including simulated PCAP captures, IP Detail Records (IPDR), and targeted IP range sweeps for comprehensive coverage. Detection relies on 10,000+ unique signature patterns.</p>
+    </div>
+
+    <div class="card feature-card">
+        <i class="fas fa-clock icon-large" style="color: var(--medium-yellow); margin-bottom: 15px;"></i>
+        <h2>Real-time Monitoring</h2>
+        <p>Utilizing simulated concurrent processing, the platform offers a low-latency view of live traffic, ensuring timely intervention against developing threats.</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-code-branch"></i> Technology & Architecture</h2>
+    
+    <div style="display: flex; gap: 30px; margin-top: 20px;">
+        <div style="flex: 1;">
+            <h3 style="color: var(--accent); margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Backend Engine</h3>
+            <ul class="tech-list">
+                <li><i class="fab fa-python tech-icon"></i> Python & Flask: Robust web framework.</li>
+                <li><i class="fas fa-stopwatch tech-icon"></i> Multi-threading: For simulated concurrent traffic generation.</li>
+                <li><i class="fas fa-ethernet tech-icon"></i> TrafficEngine: Custom core logic for packet and threat simulation.</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h3 style="color: var(--accent); margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Frontend Interface</h3>
+            <ul class="tech-list">
+                <li><i class="fab fa-html5 tech-icon"></i> HTML5/CSS3: Structure and professional dark theme.</li>
+                <li><i class="fas fa-server tech-icon"></i> RESTful API: For communication between client and server.</li>
+                <li><i class="fas fa-database tech-icon"></i> Custom JavaScript: Real-time data fetching and rendering.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h3 style="color: var(--critical-red); border-bottom: 1px solid var(--border); padding-bottom: 5px;"><i class="fas fa-fingerprint"></i> Hybrid Rulebase and Dataset Integration</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 15px;">
+            The Sentinel-X Hybrid Detection System (HDPS) is powered by a massive, integrated set of signatures to ensure comprehensive coverage:
+        </p>
+        <ul class="tech-list" style="margin-top: 10px;">
+            <li><i class="fas fa-cogs tech-icon" style="color: var(--high-orange);"></i> Core High-Fidelity Rules: 10+ rule-engine signatures targeting critical attacks (SQLI, RCE, LFI/RFI, Web Shell Upload, etc.).</li>
+            <li><i class="fas fa-database tech-icon" style="color: var(--accent);"></i> Dataset 2000 Integration: Simulates the integration of approximately 1,000 patterns (queries/URLs) used for training the Machine Learning component.</li>
+            <li><i class="fas fa-shield-alt tech-icon" style="color: var(--critical-red);"></i> Realistic Malicious Dataset (5000+): Integrates 5,000+ unique, realistic malicious patterns (phishing, C2, trojans, ransomware payloads) to serve as a high-confidence threat feed, directly improving the attack simulation diversity.</li>
+            <li><i class="fas fa-brain tech-icon" style="color: var(--medium-yellow);"></i> ML Fallback: Utilizes a simulated ML classifier (XGBoost/LightGBM) to detect obfuscated or novel payloads not caught by the rule-first engine, driving up the HTS (Hybrid Threat Score).</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-headset"></i> Support & Development</h2>
+    <p>
+        ThreatCast is a continuously evolving project. For further inquiries or feature requests, please contact the development team:
+    </p>
+    <p style="margin-top: 15px;">
+        <span style="color: var(--accent); font-weight: bold;"><i class="fas fa-envelope"></i> Email:</span> ZeroTrace@sih2026
+        <span style="margin-left: 30px; color: var(--accent); font-weight: bold;"><i class="fas fa-map-marker-alt"></i> Location:</span> Royal College of Engineering and Technology,Akkikkavu,Kerala
+    </p>
+</div>
+
+<style>
+    /* Specific styles for the About page aesthetics */
+    .icon-large {
+        font-size: 3rem;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    .feature-card:hover .icon-large {
+        transform: rotateY(15deg) scale(1.05);
+    }
+    .tech-list {
+        list-style: none;
+        padding: 0;
+    }
+    .tech-list li {
+        padding: 8px 0;
+        border-bottom: 1px dotted var(--border);
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+    .tech-list li:last-child {
+        border-bottom: none;
+    }
+    .tech-icon {
+        margin-right: 10px;
+        color: var(--accent);
+    }
+</style>
+{% endblock %}

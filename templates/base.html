@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThreatCast x SAII</title>
+
+  <!-- Font / Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">ThreatCast</div>
+
+      <ul>
+        <li>
+          <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-chart-line"></i> Dashboard
+          </a>
+        </li>
+
+        <li>
+          <a href="/monitor" class="{% if request.path == '/monitor' %}active{% endif %}">
+            <i class="fas fa-satellite-dish"></i> Monitor
+          </a>
+        </li>
+
+        <li>
+          <a href="/processor" class="{% if request.path == '/processor' %}active{% endif %}">
+            <i class="fas fa-file-code"></i> Processor
+          </a>
+        </li>
+
+        <li>
+          <a href="/semantic" class="{% if request.path == '/semantic' %}active{% endif %}">
+            <i class="fas fa-brain"></i> Semantic
+          </a>
+        </li>
+
+        <!-- ✅ NEW: SOC Work Area -->
+        <li>
+          <a href="/soc" class="{% if request.path == '/soc' %}active{% endif %}">
+            <i class="fas fa-headset"></i> SOC Work Area
+          </a>
+        </li>
+
+        <li>
+          <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">
+            <i class="fas fa-info-circle"></i> About
+          </a>
+        </li>
+      </ul>
+
+      <div class="system-status">
+        <span class="indicator active"></span> System Online
+        <div style="margin-top:6px; opacity:0.8;">
+          HDPS + SAII Active
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      {% block content %}{% endblock %}
+
+      <div class="app-footer">
+        ThreatCast SAII • Hybrid Detection + Semantic Intent Inference
+      </div>
+    </div>
+  </div>
+
+  <!-- Global JS (used by Dashboard + Monitor + Processor export, block, etc.) -->
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
