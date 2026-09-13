@@ -5,7 +5,7 @@ ThreatCast is a unified, next-generation network traffic analysis and simulated 
 
 
 ## 📸 Prototype Preview
-*(Make sure you have saved your screenshot as **dashboard.png** in the project folder!)*
+
 ![ThreatCast Dashboard](dashboard.png)
 
 ## Features
