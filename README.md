@@ -5,8 +5,8 @@ ThreatCast is a unified, next-generation network traffic analysis and simulated 
 
 
 ## 📸 Prototype Preview
-*(Replace the image below with a real screenshot of your dashboard running)*
-![ThreatCast Dashboard Placeholder](https://via.placeholder.com/800x400.png?text=ThreatCast+Dashboard+-+Upload+Screenshot+Here)
+*(Make sure you have saved your screenshot as **dashboard.png** in the project folder!)*
+![ThreatCast Dashboard](dashboard.png)
 
 ## Features
 - **AI-Based Forecasting:** Predicts the likelihood of an attack in the upcoming time window using multi-feature behavioral profiling.
