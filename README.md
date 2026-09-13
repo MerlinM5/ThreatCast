@@ -1,7 +1,14 @@
 # ThreatCast: AI-Based Network Attack Forecasting
 
 ## Overview
-ThreatCast is a unified, next-generation network traffic analysis and simulated threat detection platform, designed for speed and clarity in forensic investigation and real-time monitoring. 
+ThreatCast is a unified, next-generation network traffic analysis and simulated threat detection platform, designed for speed and clarity in forensic investigation and real-time monitoring. Developed by Team **ZeroTrace** for Smart India Hackathon 2026.
+
+## 🔗 Live Prototype Demo
+> **[Click here to view the Live ThreatCast Prototype](YOUR_DEPLOYMENT_LINK_HERE)** 
+
+## 📸 Prototype Preview
+*(Replace the image below with a real screenshot of your dashboard running)*
+![ThreatCast Dashboard Placeholder](https://via.placeholder.com/800x400.png?text=ThreatCast+Dashboard+-+Upload+Screenshot+Here)
 
 ## Features
 - **AI-Based Forecasting:** Predicts the likelihood of an attack in the upcoming time window using multi-feature behavioral profiling.
