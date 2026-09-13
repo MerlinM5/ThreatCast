@@ -35,7 +35,7 @@ Follow these steps to run the ThreatCast prototype locally on your machine.
 
 1. **Clone the repository** (if you haven't already):
    ```bash
-   git clone https://github.com/YOUR_USERNAME/ThreatCast.git
+   git clone https://github.com/MerlinM5/ThreatCast.git
    cd "Threat case"
    ```
 
