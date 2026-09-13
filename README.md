@@ -36,7 +36,3 @@ python app.py
 ```
 Navigate to `http://localhost:5000` in your web browser to access the ThreatCast dashboard.
 
-## Team
-- **Team Name:** ZeroTrace
-- **Problem Statement ID:** PS26153
-- **Theme:** Blockchain & Cybersecurity
