@@ -23,23 +23,51 @@ ThreatCast is a unified, next-generation network traffic analysis and simulated 
 - **Machine Learning / AI:** XGBoost, Isolation Forest, PyTorch (simulated via Hybrid Detection system)
 - **Telemetry Processing:** eBPF, Zeek, NetFlow (simulated packet processing)
 
-## Getting Started
+## Setup & Installation Instructions
+
+Follow these steps to run the ThreatCast prototype locally on your machine.
 
 ### Prerequisites
-- Python 3.8+
-- Requirements listed in `requirements.txt`
+- **Python 3.8+** installed on your system.
+- Git (optional, for cloning the repo).
 
-### Installation
-1. Clone the repository.
-2. Install the required dependencies:
+### Step-by-Step Installation
+
+1. **Clone the repository** (if you haven't already):
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/ThreatCast.git
+   cd "Threat case"
+   ```
+
+2. **Create a Virtual Environment** (Recommended):
+   ```bash
+   python -m venv venv
+   ```
+
+3. **Activate the Virtual Environment**:
+   - On **Windows**:
+     ```bash
+     .\venv\Scripts\activate
+     ```
+   - On **Mac/Linux**:
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. **Install the required dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
 ### Running the Application
-To start the application, run:
+
+To start the local server, run the following command in your terminal:
 ```bash
 python app.py
 ```
-Navigate to `http://localhost:5000` in your web browser to access the ThreatCast dashboard.
+
+Once the server starts, open your web browser and navigate to:
+**http://127.0.0.1:5005**
+
+*(Note: The application runs on port 5005 by default to avoid conflicts).*
 
